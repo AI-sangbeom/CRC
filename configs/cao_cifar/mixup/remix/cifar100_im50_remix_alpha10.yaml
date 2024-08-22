@@ -1,0 +1,66 @@
+NAME: 'remix_alpha10_afa'
+OUTPUT_DIR: './output/cifar100_im50'
+SHOW_STEP: 100
+SAVE_STEP: 5
+VALID_STEP: 1
+INPUT_SIZE: (224, 224)
+COLOR_SPACE: 'RGB'
+
+
+DATASET:
+  # DATASET: 'IMBALANCECIFAR100'
+  # IMBALANCECIFAR:
+  #   RATIO: 0.02
+  DATASET: 'CRC'
+  TRAIN_JSON: 'json_files/crc_train2.json'
+  VALID_JSON: 'json_files/crc_val2.json'
+
+BACKBONE:
+  TYPE: 'afa'
+
+MODULE:
+  TYPE: 'GAP'
+
+CLASSIFIER:
+  TYPE: 'FC'
+  BIAS: True
+
+LOSS:
+  LOSS_TYPE: 'CrossEntropy'
+
+TRAIN:
+  BATCH_SIZE: 64
+  MAX_EPOCH: 40
+  NUM_WORKERS: 16
+  COMBINER:
+    TYPE: 'remix'
+    ALPHA: 1.0
+    REMIX:
+      KAPPA: 3.0
+      TAU: 0.5
+  OPTIMIZER:
+    TYPE: 'SGD'
+    BASE_LR: 0.1
+    MOMENTUM: 0.9
+    WEIGHT_DECAY: 2e-4
+  LR_SCHEDULER:
+    TYPE: 'warmup'
+    LR_STEP: [20]
+    LR_FACTOR: 0.01
+    WARM_EPOCH: 5
+  TENSORBOARD:
+    ENABLE: True
+  SAMPLER:
+    TYPE: 'default'
+
+  DISTRIBUTED: False
+  SYNCBN: True
+
+# TRANSFORMS:
+#   TRAIN_TRANSFORMS: ('random_crop', 'random_horizontal_flip')
+#   TEST_TRANSFORMS: ()
+
+TEST:
+  BATCH_SIZE: 64
+  NUM_WORKERS: 8
+  MODEL_FILE: 'best_model.pth'
