@@ -1,0 +1,55 @@
+NAME: 'baseline' #_with_res50'
+OUTPUT_DIR: './output/crc/'
+SHOW_STEP: 500
+SAVE_STEP: 5
+VALID_STEP: 1
+INPUT_SIZE: (224, 224)
+COLOR_SPACE: 'RGB'
+
+DATASET:
+  ROOT: 'dataset/crc/data3'
+  DATASET: 'CRC'
+  TRAIN_JSON: 'json_files/crc_train2.json'
+  VALID_JSON: 'json_files/crc_test2.json'
+
+BACKBONE:
+  TYPE: 'res50'
+
+MODULE:
+  TYPE: 'GAP'
+
+CLASSIFIER:
+  TYPE: 'FC'
+  BIAS: True
+
+LOSS:
+  LOSS_TYPE: 'CrossEntropy'
+
+TRAIN:
+  BATCH_SIZE: 128
+  MAX_EPOCH: 100
+  NUM_WORKERS: 8
+  COMBINER:
+    TYPE: 'default'
+  OPTIMIZER:
+    TYPE: 'SGD'
+    BASE_LR: 0.2
+    MOMENTUM: 0.9
+    WEIGHT_DECAY: 1e-4
+  LR_SCHEDULER:
+    TYPE: 'multistep'
+    LR_STEP: [60, 80]
+    LR_FACTOR: 0.1
+  TENSORBOARD:
+    ENABLE: True
+  SAMPLER:
+    TYPE: 'default'
+
+  DISTRIBUTED: True
+  SYNCBN: True
+
+
+TEST:
+  BATCH_SIZE: 512
+  NUM_WORKERS: 8
+  MODEL_FILE: 'best_model.pth'
