@@ -1,0 +1,68 @@
+NAME: 'cam_generation_with_afa_nancho'
+OUTPUT_DIR: './output/cifar100_im50'
+SHOW_STEP: 100
+SAVE_STEP: 5
+VALID_STEP: 1
+INPUT_SIZE: (224, 224)
+COLOR_SPACE: 'RGB'
+
+
+DATASET:
+  DATASET: 'CRC'
+  TRAIN_JSON: 'json_files/nancho_train2.json'
+  VALID_JSON: 'json_files/nancho_val2.json'
+  CAM_NUMBER_THRES: 10
+  GENERATE_CAM_BASED_DATASET: True
+  CAM_DATA_JSON_SAVE_PATH: 'json_files/cam_json2_afa_nancho.json'
+  CAM_DATA_SAVE_PATH: 'output/cifar100_im50/cam_generation/cam_data2_afa_nancho'
+
+BACKBONE:
+  TYPE: 'afa'
+
+MODULE:
+  TYPE: 'GAP'
+
+NETWORK:
+  PRETRAINED:  True
+  PRETRAINED_MODEL: '/output/cifar100_im50/first_stage_with_afa_nancho/models/best_model.pth'
+
+CLASSIFIER:
+  TYPE: 'FC'
+  BIAS: True
+
+LOSS:
+  LOSS_TYPE: 'CrossEntropy'
+
+TRAIN:
+  BATCH_SIZE: 128
+  MAX_EPOCH: 160
+  NUM_WORKERS: 16
+  COMBINER:
+    TYPE: 'default'
+  OPTIMIZER:
+    TYPE: 'SGD'
+    BASE_LR: 0.1
+    MOMENTUM: 0.9
+    WEIGHT_DECAY: 2e-4
+  LR_SCHEDULER:
+    TYPE: 'warmup'
+    LR_STEP: [160, 180]
+    LR_FACTOR: 0.1
+    WARM_EPOCH: 5
+  TENSORBOARD:
+    ENABLE: True
+  SAMPLER:
+    TYPE: 'default'
+
+  DISTRIBUTED: False
+  SYNCBN: True
+
+
+# TRANSFORMS:
+#   TRAIN_TRANSFORMS: ('random_crop', 'random_horizontal_flip')
+#   TEST_TRANSFORMS: ()
+
+TEST:
+  BATCH_SIZE: 
+  NUM_WORKERS: 8
+  MODEL_FILE: 'best_model.pth'
