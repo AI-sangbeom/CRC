@@ -1,0 +1,1 @@
+python main/valid.py --cfg configs/cao_cifar/two_stage/drs/cam_based_sampling/first_stage/cifar100_im100.yaml --gpus 0
